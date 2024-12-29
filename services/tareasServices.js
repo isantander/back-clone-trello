@@ -1,8 +1,6 @@
 import Tareas from "../models/Tareas.js";
 import crypto from "crypto";
 
-
-
 export const getTareasService = () => {
     return Tareas.find({ habilitada: true });
 }
@@ -11,13 +9,21 @@ export const getTareaService = (id) => {
     return Tareas.findOne({ id: id, habilitada: true });
 }
 
-export const createTareaService = async (nombre, descripcion, estado) => {
+export const createTareaService = async (nombre, descripcion, estado, orden) => {
+
+    if(orden === undefined){
+        const tareasActuales = await Tareas.find({ habilitada: true , estado: estado });
+        orden = tareasActuales.length;
+    }
+
+    console.log("orden",orden);
     const tarea =  {
         id: crypto.randomUUID(),
         nombre: nombre,
         descripcion: descripcion,
-        estado: "pendiente",
-        habilitada: true
+        estado: estado,
+        habilitada: true,
+        orden: orden
     }
 
     const nuevaTarea =  await Tareas.create(tarea);
@@ -25,16 +31,33 @@ export const createTareaService = async (nombre, descripcion, estado) => {
     return tarea;
 }
 
-export const updateTareaService = async (id, nombre, descripcion, estado) => {
-    console.log("actualizando tarea",id);
+export const updateTareaService = async (id, nombre, descripcion, estado, orden) => {
     const tarea = await Tareas.findOne({ id: id, habilitada: true });
 
     if (!tarea) {
         return null;
     }
 
+    tarea.nombre = nombre;
+    tarea.descripcion = descripcion;
+    tarea.estado = estado;
+    tarea.orden = orden;
+
+    await tarea.save();
+
+    return tarea;
+}
+
+export const updatePartialTareaService = async (id, nombre, descripcion, estado, orden) => {
+    
+    const tarea = await Tareas.findOne({ id: id, habilitada: true });
+    
+    if (!tarea) {
+        return null;
+    }
+    
     if(nombre) {
-        tarea.nombre = nombre;        
+        tarea.nombre = nombre;
     }
     if(descripcion) {
         tarea.descripcion = descripcion;
@@ -42,8 +65,12 @@ export const updateTareaService = async (id, nombre, descripcion, estado) => {
     if(estado) {
         tarea.estado = estado;
     }
+    
+    if(orden >= 0){
+        tarea.orden = orden;
+    }
 
     await tarea.save();
 
-    return tarea;    
+    return tarea;
 }
