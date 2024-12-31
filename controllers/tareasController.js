@@ -53,7 +53,7 @@ export const createTareaController =  async (req, res, next) => {
 
         const tarea = await createTareaService( nombre, descripcion, estado, orden );
 
-        return res.status(200).json({
+        return res.status(201).json({
             status: "success",
             message: "Tarea creada",
             data: tarea

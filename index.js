@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
-import routerTareas from "./routers/routerTareas.js";
-import { errorHandler } from "./middlewares/errorHandler.js";
+import tareasRouter from "./routers/tareasRouter.js";
+import usuariosRouter from "./routers/usuariosRouter.js";
+import { errorHandler } from "./utils/errorHandler.js";
 import moongose from "mongoose";
 import env from "dotenv";
+import { autorizacionMiddleware } from "./middlewares/autorizacionMiddleware.js";
 env.config();
 
 const PORT = 3000;
@@ -11,10 +13,23 @@ const PORT = 3000;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
 
-app.use("/tareas", routerTareas);
+app.use(cors({
+        origin: "*", // Cambiar a la URL de producción
+        allowedHeaders: ["Content-Type", "Authorization", "x-refresh-token"],
+}));
 
+app.use("/tareas", tareasRouter);
+app.use("/auth", usuariosRouter);
+
+app.get("/protected", autorizacionMiddleware, (req, res) => {
+    res.status(200).json({
+        message: "Acceso permitido",
+        user: req.user
+    })
+});
+
+// Consolidación en un solo punto de los errores HTTP 500
 app.use(errorHandler);
 
 

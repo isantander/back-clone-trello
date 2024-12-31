@@ -1,4 +1,4 @@
-import Tareas from "../models/Tareas.js";
+import Tareas from "../models/TareasModel.js";
 import crypto from "crypto";
 
 export const getTareasService = () => {
@@ -32,18 +32,24 @@ export const createTareaService = async (nombre, descripcion, estado, orden) => 
 }
 
 export const updateTareaService = async (id, nombre, descripcion, estado, orden) => {
-    const tarea = await Tareas.findOne({ id: id, habilitada: true });
+    //const tarea = await Tareas.findOne({ id: id, habilitada: true });
+    const tarea = await Tareas.findOneAndUpdate({ id: id, habilitada: true }, {
+        nombre: nombre,
+        descripcion: descripcion,   
+        estado: estado,
+        orden: orden
+    });
 
     if (!tarea) {
         return null;
     }
 
-    tarea.nombre = nombre;
+/*     tarea.nombre = nombre;
     tarea.descripcion = descripcion;
     tarea.estado = estado;
     tarea.orden = orden;
 
-    await tarea.save();
+    await tarea.save(); */
 
     return tarea;
 }
