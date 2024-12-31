@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { generarToken , generarRefreshToken } from "../utils/generarTokens.js";
+import { generarAccessToken , generarRefreshToken } from "../utils/generarTokens.js";
 import Usuario from '../models/UsuariosModel.js';
 
 
@@ -34,7 +34,7 @@ export const loginUsuarioService = async (email, password) => {
         return -1
     }
 
-    const accessToken = generarToken({  email: usuario.email, rol: usuario.rol });
+    const accessToken = generarAccessToken({  email: usuario.email, rol: usuario.rol });
     const refreshToken = generarRefreshToken({ email: usuario.email, rol: usuario.rol });
 
     usuario.refreshToken = refreshToken;
@@ -44,8 +44,8 @@ export const loginUsuarioService = async (email, password) => {
 }
 
 export const actualizarTokenService = async (refreshToken) => {
-    const payload = jwt.verify(refreshToken, process.env.SECRET_REFRESH_TOKEN);
-    console.log(payload);
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH);
+
     const usuario = await Usuario.findOne({ email: payload.email });
     if (!usuario) {
         return -1

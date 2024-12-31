@@ -7,7 +7,7 @@ const JWT_REFRESH = process.env.JWT_REFRESH;
 const JWT_ACCESS_EXPIRATION = process.env.JWT_ACCESS_EXPIRATION;
 const JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION;
 
-export const generarToken = (payload) => {
+export const generarAccessToken = (payload) => {
     const expiracion = JWT_ACCESS_EXPIRATION || "15m";
     return jwt.sign(payload, JWT_ACCESS, { expiresIn: expiracion });
 }

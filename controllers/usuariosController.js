@@ -48,7 +48,7 @@ export const actualizarTokenController = async (req, res, next) => {
     
     try{
         const refreshToken = req.headers['x-refresh-token'];
-        
+        console.log("refreshToken", refreshToken);
         if(!refreshToken){
             res.status(401).json({
                 success: "error",
