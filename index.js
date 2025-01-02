@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import tareasRouter from "./routers/tareasRouter.js";
 import usuariosRouter from "./routers/usuariosRouter.js";
-import { errorHandler } from "./utils/errorHandler.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 import moongose from "mongoose";
 import env from "dotenv";
 import { autorizacionMiddleware } from "./middlewares/autorizacionMiddleware.js";

@@ -6,7 +6,14 @@ export const crearUsuarioController = async (req, res, next) => {
         const {email, password, name} = req.body;
         const usuario = await crearUsuarioService(email, password, name);
 
-        res.status(201).json({
+        if(usuario === -1){
+            return res.status(400).json({
+                success: "error",
+                message: "El usuario ya existe",
+                data: {}
+            })
+        }
+        return res.status(201).json({
             success: "success",
             message: "Usuario creado exitosamente",
             data: usuario
@@ -24,14 +31,14 @@ export const loginUsuarioController = async (req, res, next) => {
         const { accessToken, refreshToken} = await loginUsuarioService(email, password);
 
         if(!accessToken || !refreshToken){
-            res.status(400).json({
+            return res.status(400).json({
                 success: "error",
                 message: "Email o contraseña incorrectos",
                 data: {}
             })
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: "success",
             message: "Usuario logueado exitosamente",
             data: {
@@ -48,9 +55,9 @@ export const actualizarTokenController = async (req, res, next) => {
     
     try{
         const refreshToken = req.headers['x-refresh-token'];
-        console.log("refreshToken", refreshToken);
+
         if(!refreshToken){
-            res.status(401).json({
+            return res.status(401).json({
                 success: "error",
                 message: "Token de refresco no proporcionado",
                 data: {}
@@ -59,7 +66,7 @@ export const actualizarTokenController = async (req, res, next) => {
 
         const accessToken = await actualizarTokenService(refreshToken);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: "success",
             message: "Token actualizado exitosamente",
             data: {
