@@ -1,5 +1,5 @@
 import express from "express";
-import { loginUsuarioController, logoutUsuarioController, actualizarTokenController, crearUsuarioController } from "../controllers/usuariosController.js";
+import { loginUsuarioController,  actualizarTokenController, crearUsuarioController } from "../controllers/usuariosController.js";
 
 const usuariosRouter = express.Router();
 

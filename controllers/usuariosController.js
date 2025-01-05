@@ -52,32 +52,25 @@ export const loginUsuarioController = async (req, res, next) => {
 }
 
 export const actualizarTokenController = async (req, res, next) => {
-    
-    try{
-        const refreshToken = req.headers['x-refresh-token'];
-
-        if(!refreshToken){
-            return res.status(401).json({
-                success: "error",
-                message: "Token de refresco no proporcionado",
-                data: {}
-            })
+    try {
+        const refreshToken = req.headers["x-refresh-token"]
+        if (!refreshToken) {
+            return res.status(400).json({
+                status: "error", 
+                menssage: "error en el servidor", 
+                data:{}
+            });
         }
-
         const accessToken = await actualizarTokenService(refreshToken);
-
         return res.status(200).json({
-            success: "success",
-            message: "Token actualizado exitosamente",
-            data: {
-                accessToken: accessToken
+            status: "success", 
+            menssage: "token actualizado", 
+            data:{
+                accessToken
             }
-        })
-
-
-    }
-    catch(err){
-        next(err);
+        });
+    } catch (error) {
+        next(error);
     }
 }
 

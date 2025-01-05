@@ -2,7 +2,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { generarAccessToken , generarRefreshToken } from "../utils/generarTokens.js";
 import Usuario from '../models/UsuariosModel.js';
-
+import env from "dotenv";
+env.config();
 
 export const crearUsuarioService = async (email, password, name) => {
     const existeUsuario = await Usuario.findOne({ email: email });
@@ -18,10 +19,12 @@ export const crearUsuarioService = async (email, password, name) => {
         rol: "user",
         emailValidado: true // Cambiar a false en producción y generar proceso de validación de email
     };
+    console.log(usuario);
 
     const nuevoUsuario =  await Usuario.create(usuario);
     return nuevoUsuario;
 }
+
 
 export const loginUsuarioService = async (email, password) => {
     const usuario = await Usuario.findOne({ email: email });
@@ -44,21 +47,21 @@ export const loginUsuarioService = async (email, password) => {
 }
 
 export const actualizarTokenService = async (refreshToken) => {
-    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH);
+    const user = jwt.verify(refreshToken, process.env.JWT_REFRESH);
 
-    const usuario = await Usuario.findOne({ email: payload.email });
-    if (!usuario) {
+    const userDB = await Usuario.findOne({username: user.username});
+
+    if(!userDB) {
         return -1
     }
-    const tokenActualizado = generarAccessToken({ 
-        email: usuario.email, 
-        rol: usuario.rol 
-    });
-    
-    return tokenActualizado;
+
+    const accesstoken = generarAccessToken({username:user.username,password: user.password, id: user._id});
+    return accesstoken
 }
 
-export const logoutUsuarioService = async (refreshToken) => {}
+export const logoutUsuarioService = async (refreshToken) => {
+
+}
 
 
  

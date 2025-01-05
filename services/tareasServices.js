@@ -16,7 +16,6 @@ export const createTareaService = async (nombre, descripcion, estado, orden) => 
         orden = tareasActuales.length;
     }
 
-    console.log("orden",orden);
     const tarea =  {
         id: crypto.randomUUID(),
         nombre: nombre,

@@ -4,11 +4,14 @@ import {autorizacionMiddleware} from "../middlewares/autorizacionMiddleware.js";
 
 const tareasRouter = express.Router();
 
-tareasRouter.get("/", autorizacionMiddleware ,getTareasController);
-tareasRouter.get("/:id", getTareaController);
-tareasRouter.post("/", createTareaController);
-tareasRouter.put("/:id", updateTareaController);
-tareasRouter.patch("/:id", updatePartialTareaController);
+// protegemos todas las rutas con el middleware de autorización
+//tareasRouter.use(autorizacionMiddleware);
+
+tareasRouter.get("/", autorizacionMiddleware, getTareasController);
+tareasRouter.get("/:id", autorizacionMiddleware, getTareaController);
+tareasRouter.post("/", autorizacionMiddleware, createTareaController);
+tareasRouter.put("/:id", autorizacionMiddleware, updateTareaController);
+tareasRouter.patch("/:id", autorizacionMiddleware, updatePartialTareaController);
 tareasRouter.delete("/:id",);
 
 export default tareasRouter;
