@@ -13,6 +13,7 @@ const app = express();
 
 app.use(express.json());
 
+// verificar luego si es necesario definir methdos
 app.use(cors({
     origin: "*", 
     allowedHeaders: ["Content-Type", "Authorization", "x-refresh-token"],
