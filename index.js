@@ -9,6 +9,9 @@ import { autorizacionMiddleware } from "./middlewares/autorizacionMiddleware.js"
 env.config();
 
 const PORT = 3000;
+const app = express();
+
+app.use(express.json());
 
 app.use(cors({
     origin: "*", 
