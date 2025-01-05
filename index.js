@@ -10,13 +10,10 @@ env.config();
 
 const PORT = 3000;
 
-const app = express();
-
-app.use(express.json());
-
 app.use(cors({
-        origin: "*", // Cambiar a la URL de producción
-        allowedHeaders: ["Content-Type", "Authorization", "x-refresh-token"],
+    origin: "*", 
+    allowedHeaders: ["Content-Type", "Authorization", "x-refresh-token"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }));
 
 app.use("/tareas", tareasRouter);
