@@ -2,19 +2,17 @@ import Tareas from "../models/TareasModel.js";
 import crypto from "crypto";
 
 export const getTareasService = () => {
-    return Tareas.find({ habilitada: true });
+    return Tareas.find({ habilitada: true }).populate('autor', 'name');
 }
 
 export const getTareaService = (id) => {
-    return Tareas.findOne({ id: id, habilitada: true });
+    return Tareas.findOne({ id: id, habilitada: true }).populate('autor', 'name');
 }
 
-export const createTareaService = async (nombre, descripcion, estado, orden) => {
+export const createTareaService = async (nombre, descripcion, estado, autor) => {
 
-    if(orden === undefined){
-        const tareasActuales = await Tareas.find({ habilitada: true , estado: estado });
-        orden = tareasActuales.length;
-    }
+    const tareasActuales = await Tareas.find({ habilitada: true , estado: estado });
+    const orden = tareasActuales.length;
 
     const tarea =  {
         id: crypto.randomUUID(),
@@ -22,16 +20,17 @@ export const createTareaService = async (nombre, descripcion, estado, orden) => 
         descripcion: descripcion,
         estado: estado,
         habilitada: true,
-        orden: orden
+        orden: orden,
+        autor: autor
     }
 
-    const nuevaTarea =  await Tareas.create(tarea);
+    await Tareas.create(tarea);
 
     return tarea;
 }
 
 export const updateTareaService = async (id, nombre, descripcion, estado, orden) => {
-    //const tarea = await Tareas.findOne({ id: id, habilitada: true });
+    console.log("updateTareaService", id, nombre, descripcion, estado, orden);
     const tarea = await Tareas.findOneAndUpdate({ id: id, habilitada: true }, {
         nombre: nombre,
         descripcion: descripcion,   
@@ -43,14 +42,20 @@ export const updateTareaService = async (id, nombre, descripcion, estado, orden)
         return null;
     }
 
-/*     tarea.nombre = nombre;
-    tarea.descripcion = descripcion;
-    tarea.estado = estado;
-    tarea.orden = orden;
-
-    await tarea.save(); */
-
     return tarea;
+}
+
+export const deleteTareaService = async (id) => {
+    const tarea = await Tareas.findOne({ id: id, habilitada: true });
+
+    if (!tarea) {
+        return null;
+    }
+
+    tarea.habilitada = false;
+    await tarea.save();
+    return true;
+
 }
 
 export const updatePartialTareaService = async (id, nombre, descripcion, estado, orden) => {
@@ -78,4 +83,15 @@ export const updatePartialTareaService = async (id, nombre, descripcion, estado,
     await tarea.save();
 
     return tarea;
+}
+
+export const getTareaByAutorService = async (autor) => {
+    const tareas = await Tareas.find({ autor: autor, habilitada: true }).populate('autor', 'name');
+    
+    if (!tareas) {
+        return null;
+    }
+    
+    return tareas;
+    
 }

@@ -28,7 +28,7 @@ export const loginUsuarioController = async (req, res, next) => {
     
     try{
         const {email, password} = req.body;
-        const { accessToken, refreshToken} = await loginUsuarioService(email, password);
+        const {usuarioId, userName, accessToken, refreshToken} = await loginUsuarioService(email, password);
 
         if(!accessToken || !refreshToken){
             return res.status(400).json({
@@ -43,7 +43,9 @@ export const loginUsuarioController = async (req, res, next) => {
             message: "Usuario logueado exitosamente",
             data: {
                 accessToken: accessToken,
-                refreshToken: refreshToken
+                refreshToken: refreshToken,
+                usuarioId: usuarioId,
+                userName: userName                
             }
         })
     }catch(err){

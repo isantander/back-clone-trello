@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(cors({
     origin: "*", 
     allowedHeaders: ["Content-Type", "Authorization", "x-refresh-token"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
 }));
 
 app.use("/tareas", tareasRouter);

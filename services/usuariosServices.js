@@ -25,7 +25,6 @@ export const crearUsuarioService = async (email, password, name) => {
     return nuevoUsuario;
 }
 
-
 export const loginUsuarioService = async (email, password) => {
     const usuario = await Usuario.findOne({ email: email });
     if (!usuario) {
@@ -37,27 +36,32 @@ export const loginUsuarioService = async (email, password) => {
         return -1
     }
 
+    const usuarioId = usuario._id;
+    const userName = usuario.name;
     const accessToken = generarAccessToken({  email: usuario.email, rol: usuario.rol });
     const refreshToken = generarRefreshToken({ email: usuario.email, rol: usuario.rol });
 
     usuario.refreshToken = refreshToken;
     await usuario.save();
 
-    return { accessToken, refreshToken };
+    console.log("nombre ", userName);
+    return { usuarioId, userName, accessToken, refreshToken };
 }
 
 export const actualizarTokenService = async (refreshToken) => {
     const user = jwt.verify(refreshToken, process.env.JWT_REFRESH);
-
-    const userDB = await Usuario.findOne({username: user.username});
+    const userDB = await Usuario.findOne({email: user.email});
 
     if(!userDB) {
         return -1
     }
 
-    const accesstoken = generarAccessToken({username:user.username,password: user.password, id: user._id});
+    const accesstoken = generarAccessToken({username:user.username,password: user.password });
+     
     return accesstoken
 }
+
+
 
 export const logoutUsuarioService = async (refreshToken) => {
 
